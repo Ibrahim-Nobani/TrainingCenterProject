@@ -1,17 +1,22 @@
 package com.example.trainingcenterproject;
 
+import java.util.ArrayList;
+
 public class Instructor extends User{
     private int mobileNumber;
     private String address;
     private String specialization;
     private String degree;
+    private ArrayList<Course> courses= new ArrayList<>();
+
     public Instructor(int userId, String email, String password, String firstName, String lastName,
-                      int mobileNumber, String address ,String specialization, String degree) {
+                      int mobileNumber, String address ,String specialization, String degree, ArrayList<Course> courses) {
         super(userId, email, password, firstName, lastName);
         this.mobileNumber = mobileNumber;
         this.address = address;
         this.specialization = specialization;
         this.degree = degree;
+        this.courses=courses;
     }
 
     public int getMobileNumber() {
@@ -45,6 +50,14 @@ public class Instructor extends User{
     public void setDegree(String degree) {
         this.degree = degree;
     }
+
+    public ArrayList<Course> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(ArrayList<Course> courses) {
+        this.courses = courses;
+    }
     @Override
     public String toString() {
         return "Instructor{" +
@@ -57,6 +70,7 @@ public class Instructor extends User{
                 ", address='" + address + '\'' +
                 ", specialization='" + specialization + '\'' +
                 ", degree='" + degree + '\'' +
+                ", Instructor{" + "courses=" + courses +
                 '}';
     }
 }

@@ -2,7 +2,6 @@ package com.example.trainingcenterproject;
 
 public class Course {
     private int courseId;
-    private String courseNumber;
     private String title;
     private String mainTopics;
     private String prerequisites;
@@ -13,11 +12,10 @@ public class Course {
     private String venue;
 
     // Constructor
-    public Course(int courseId, String courseNumber, String title, String mainTopics, String prerequisites,
+    public Course(int courseId,  String title, String mainTopics, String prerequisites,
                   int instructorId, String registrationDeadline, String startDate,
                   String schedule, String venue) {
         this.courseId = courseId;
-        this.courseNumber = courseNumber;
         this.title = title;
         this.mainTopics = mainTopics;
         this.prerequisites = prerequisites;
@@ -37,14 +35,6 @@ public class Course {
 
     public void setCourseId(int courseId) {
         this.courseId = courseId;
-    }
-
-    public String getCourseNumber() {
-        return courseNumber;
-    }
-
-    public void setCourseNumber(String courseNumber) {
-        this.courseNumber = courseNumber;
     }
 
     public String getTitle() {
@@ -115,7 +105,6 @@ public class Course {
     public String toString() {
         return "Course{" +
                 "courseId=" + courseId +
-                ", courseNumber='" + courseNumber + '\'' +
                 ", title='" + title + '\'' +
                 ", mainTopics='" + mainTopics + '\'' +
                 ", prerequisites='" + prerequisites + '\'' +

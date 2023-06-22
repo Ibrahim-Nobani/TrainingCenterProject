@@ -14,6 +14,38 @@ public class Registration {
         this.status = status;
     }
 
+    public int getRegistrationId() {
+        return registrationId;
+    }
+
+    public void setRegistrationId(int registrationId) {
+        this.registrationId = registrationId;
+    }
+
+    public int getCourseId() {
+        return courseId;
+    }
+
+    public void setCourseId(int courseId) {
+        this.courseId = courseId;
+    }
+
+    public int getTraineeId() {
+        return traineeId;
+    }
+
+    public void setTraineeId(int traineeId) {
+        this.traineeId = traineeId;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     @Override
     public String toString() {
         return "Registration{" +
