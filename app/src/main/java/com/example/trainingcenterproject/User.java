@@ -1,7 +1,6 @@
 package com.example.trainingcenterproject;
 
 public class User {
-    private int userId;
     private String email;
     private String password;
     private String firstName;
@@ -9,20 +8,11 @@ public class User {
     //private String photo;
 
     // Constructor
-    public User(int userId, String email, String password, String firstName, String lastName) {
-        this.userId = userId;
+    public User(String email, String password, String firstName, String lastName) {
         this.email = email;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
-    }
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
     }
 
     public String getEmail() {

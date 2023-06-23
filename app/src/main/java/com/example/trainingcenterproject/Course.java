@@ -5,7 +5,7 @@ public class Course {
     private String title;
     private String mainTopics;
     private String prerequisites;
-    private int instructorId;
+    private String instructorEmail;
     private String registrationDeadline;
     private String startDate;
     private String schedule;
@@ -13,13 +13,13 @@ public class Course {
 
     // Constructor
     public Course(int courseId,  String title, String mainTopics, String prerequisites,
-                  int instructorId, String registrationDeadline, String startDate,
+                  String instructorEmail, String registrationDeadline, String startDate,
                   String schedule, String venue) {
         this.courseId = courseId;
         this.title = title;
         this.mainTopics = mainTopics;
         this.prerequisites = prerequisites;
-        this.instructorId = instructorId;
+        this.instructorEmail = instructorEmail;
         this.registrationDeadline = registrationDeadline;
         this.startDate = startDate;
         this.schedule = schedule;
@@ -61,12 +61,12 @@ public class Course {
         this.prerequisites = prerequisites;
     }
 
-    public int getInstructorId() {
-        return instructorId;
+    public String getInstructorEmail() {
+        return instructorEmail;
     }
 
-    public void setInstructorId(int instructorId) {
-        this.instructorId = instructorId;
+    public void setInstructorEmail(String instructorEmail) {
+        this.instructorEmail = instructorEmail;
     }
 
     public String getRegistrationDeadline() {
@@ -108,7 +108,7 @@ public class Course {
                 ", title='" + title + '\'' +
                 ", mainTopics='" + mainTopics + '\'' +
                 ", prerequisites='" + prerequisites + '\'' +
-                ", instructorId=" + instructorId +
+                ", instructorEmail=" + instructorEmail +
                 ", registrationDeadline='" + registrationDeadline + '\'' +
                 ", startDate='" + startDate + '\'' +
                 ", schedule='" + schedule + '\'' +

@@ -9,9 +9,9 @@ public class Instructor extends User{
     private String degree;
     private ArrayList<Course> courses= new ArrayList<>();
 
-    public Instructor(int userId, String email, String password, String firstName, String lastName,
+    public Instructor(String email, String password, String firstName, String lastName,
                       int mobileNumber, String address ,String specialization, String degree, ArrayList<Course> courses) {
-        super(userId, email, password, firstName, lastName);
+        super(email, password, firstName, lastName);
         this.mobileNumber = mobileNumber;
         this.address = address;
         this.specialization = specialization;
@@ -61,7 +61,6 @@ public class Instructor extends User{
     @Override
     public String toString() {
         return "Instructor{" +
-                "userId=" + getUserId() +
                 ", email='" + getEmail() + '\'' +
                 ", password='" + getPassword() + '\'' +
                 ", firstName='" + getFirstName() + '\'' +

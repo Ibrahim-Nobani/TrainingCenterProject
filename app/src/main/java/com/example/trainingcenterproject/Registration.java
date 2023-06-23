@@ -3,14 +3,14 @@ package com.example.trainingcenterproject;
 public class Registration {
     private int registrationId;
     private int courseId;
-    private int traineeId;
+    private String traineeEmail;
     private String status;
 
     // Constructor
-    public Registration(int registrationId, int courseId, int traineeId, String status) {
+    public Registration(int registrationId, int courseId, String traineeEmail, String status) {
         this.registrationId = registrationId;
         this.courseId = courseId;
-        this.traineeId = traineeId;
+        this.traineeEmail = traineeEmail;
         this.status = status;
     }
 
@@ -30,12 +30,12 @@ public class Registration {
         this.courseId = courseId;
     }
 
-    public int getTraineeId() {
-        return traineeId;
+    public String getTraineeEmail() {
+        return traineeEmail;
     }
 
-    public void setTraineeId(int traineeId) {
-        this.traineeId = traineeId;
+    public void setTraineeEmail(String traineeEmail) {
+        this.traineeEmail = traineeEmail;
     }
 
     public String getStatus() {
@@ -51,7 +51,7 @@ public class Registration {
         return "Registration{" +
                 "registrationId=" + registrationId +
                 ", courseId=" + courseId +
-                ", traineeId=" + traineeId +
+                ", traineeEmail=" + traineeEmail +
                 ", status='" + status + '\'' +
                 '}';
     }
