@@ -19,6 +19,9 @@ public class Instructor extends User{
         this.courses=courses;
     }
 
+    public Instructor() {
+    }
+
     public int getMobileNumber() {
         return mobileNumber;
     }

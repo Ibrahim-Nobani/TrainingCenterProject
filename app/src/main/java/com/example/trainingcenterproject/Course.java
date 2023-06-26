@@ -26,7 +26,9 @@ public class Course {
         this.venue = venue;
     }
 
-    // Getters and setters
+    public Course() {
+    }
+// Getters and setters
 
 
     public int getCourseId() {
