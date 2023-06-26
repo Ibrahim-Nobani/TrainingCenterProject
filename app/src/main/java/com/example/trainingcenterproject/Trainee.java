@@ -4,8 +4,8 @@ public class Trainee extends User{
     private int mobileNumber;
     private String address;
     public Trainee(String email, String password, String firstName, String lastName,
-                      int mobileNumber, String address) {
-        super(email, password, firstName, lastName);
+                      int mobileNumber, String address, String photo) {
+        super(email, password, firstName, lastName, photo);
         this.mobileNumber = mobileNumber;
         this.address = address;
     }

@@ -1,8 +1,8 @@
 package com.example.trainingcenterproject;
 
 public class Admin extends User{
-    public Admin(String email, String password, String firstName, String lastName) {
-        super(email, password, firstName, lastName);
+    public Admin(String email, String password, String firstName, String lastName, String photo) {
+        super(email, password, firstName, lastName, photo);
     }
 
     public Admin() {

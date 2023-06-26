@@ -13,7 +13,7 @@ public class AddTraineeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_trainee);
-        DataBaseHelper dataBaseHelper = new DataBaseHelper(AddTraineeActivity.this,"TrainingCenter",null,1);
+        DataBaseHelper dataBaseHelper = new DataBaseHelper(AddTraineeActivity.this,"training",null,1);
 
         final EditText emailEditText = findViewById(R.id.emailEditText);
         final EditText passwordEditText = findViewById(R.id.passwordEditText);

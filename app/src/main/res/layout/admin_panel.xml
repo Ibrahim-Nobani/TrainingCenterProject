@@ -1,0 +1,73 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#f2f2f2"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Admin Dashboard"
+        android:textSize="24sp"
+        android:textColor="#000"
+        android:layout_gravity="center_horizontal"
+        android:padding="16dp"/>
+
+    <Button
+        android:id="@+id/create_course_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Create a new course"
+        android:layout_marginTop="10dp"
+        android:background="#4CAF50"
+        android:textColor="#fff"/>
+    <Button
+        android:id="@+id/view_courses"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Vew all Courses"
+        android:layout_marginTop="10dp"
+        android:background="#4CAF50"
+        android:textColor="#fff"/>
+
+    <Button
+        android:id="@+id/edit_delete_course_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Edit or delete an existing course"
+        android:layout_marginTop="10dp"
+        android:background="#4CAF50"
+        android:textColor="#fff"/>
+
+    <Button
+        android:id="@+id/course_registration_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Make a course available for registration"
+        android:layout_marginTop="10dp"
+        android:background="#4CAF50"
+        android:textColor="#fff"/>
+
+    <Button
+        android:id="@+id/decision_registration_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Take decisions regarding the registration applications"
+        android:layout_marginTop="10dp"
+        android:background="#4CAF50"
+        android:textColor="#fff"/>
+
+    <Button
+        android:id="@+id/view_profiles_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="View the profiles of students and instructors"
+        android:layout_marginTop="10dp"
+        android:background="#4CAF50"
+        android:textColor="#fff"/>
+
+
+
+</LinearLayout>

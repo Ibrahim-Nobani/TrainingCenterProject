@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import androidx.annotation.Nullable;
 
-public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper{
+public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
     public DataBaseHelper(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
     }
@@ -22,10 +22,12 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper{
         sqLiteDatabase.execSQL("CREATE TABLE Registration (registrationId INTEGER PRIMARY KEY, courseId INTEGER, traineeEmail TEXT, status TEXT, FOREIGN KEY (courseId) REFERENCES Course(courseId), FOREIGN KEY (traineeEmail) REFERENCES Trainee(email))");
         sqLiteDatabase.execSQL("CREATE TABLE InstructorCourse (instructorEmail TEXT, courseId INTEGER, FOREIGN KEY (instructorEmail) REFERENCES Instructor(email), FOREIGN KEY (courseId) REFERENCES Course(courseId))");
     }
+
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
 
     }
+
     public void insertAdmin(Admin admin) {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         ContentValues contentValuesUser = new ContentValues();
@@ -38,6 +40,7 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper{
         contentValuesUser.put("email", admin.getEmail());
         sqLiteDatabase.insert("Admin", null, contentValuesUser);
     }
+
     public void insertInstructor(Instructor instructor) {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         ContentValues contentValuesUser = new ContentValues();
@@ -58,6 +61,7 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper{
             associateInstructorWithCourse(instructor.getEmail(), course.getCourseId());
         }
     }
+
     public void associateInstructorWithCourse(String instructorId, int courseId) {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -65,6 +69,7 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper{
         contentValues.put("courseId", courseId);
         sqLiteDatabase.insert("InstructorCourse", null, contentValues);
     }
+
     public void insertTrainee(Trainee trainee) {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         ContentValues contentValuesUser = new ContentValues();
@@ -79,6 +84,7 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper{
         contentValuesUser.put("address", trainee.getAddress());
         sqLiteDatabase.insert("Trainee", null, contentValuesUser);
     }
+
     public void insertCourse(Course course) {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -100,11 +106,68 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper{
         contentValues.put("registrationId", Register.getRegistrationId()); // this is autoincremented, might cause errors.
         contentValues.put("courseId", Register.getCourseId()); // this is autoincremented, might cause errors.
         contentValues.put("traineeEmail", Register.getTraineeEmail());
-        contentValues.put("status",Register.getStatus() );
+        contentValues.put("status", Register.getStatus());
         sqLiteDatabase.insert("Registration", null, contentValues);
     }
+
     public Cursor getAllAdmins() {
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
-        return sqLiteDatabase.rawQuery("SELECT * FROM ADMIN", null);
+        return sqLiteDatabase.rawQuery("SELECT Admin.email, User.firstName, User.lastName FROM Admin INNER JOIN User ON Admin.email = User.email", null);
     }
+
+
+    public Cursor getAllTrainees() {
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        return sqLiteDatabase.rawQuery("SELECT * FROM Trainee INNER JOIN User ON Trainee.email = User.email", null);
+    }
+
+    public Cursor getAllInstructors() {
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        return sqLiteDatabase.rawQuery("SELECT * FROM Instructor INNER JOIN User ON Instructor.email = User.email", null);
+    }
+
+    public Cursor getAllCourses() {
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        return sqLiteDatabase.rawQuery("SELECT * FROM Course", null);
+    }
+
+
+    public String getUserRole(String email, String password) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+
+        String query = "SELECT * FROM User WHERE email = ? AND password = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{email, password});
+
+        if (!cursor.moveToFirst()) {
+            cursor.close();
+            return null;
+        }
+
+        cursor.close();
+
+
+        String[] tables = new String[]{"Admin", "Instructor", "Trainee"};
+        String[] roles = new String[]{"admin", "instructor", "trainee"};
+
+        for (int i = 0; i < tables.length; i++) {
+            String table = tables[i];
+            String role = roles[i];
+
+            query = "SELECT * FROM " + table + " WHERE email = ?";
+            cursor = db.rawQuery(query, new String[]{email});
+
+            if (cursor.moveToFirst()) {
+                cursor.close();
+                return role;
+            }
+
+            cursor.close();
+        }
+
+        return null;
+    }
+
+
+
 }

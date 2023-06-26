@@ -1,6 +1,6 @@
 package com.example.trainingcenterproject;
 
-import java.util.ArrayList;
+import java.util.*;
 
 public class Instructor extends User{
     private int mobileNumber;
@@ -10,8 +10,8 @@ public class Instructor extends User{
     private ArrayList<Course> courses= new ArrayList<>();
 
     public Instructor(String email, String password, String firstName, String lastName,
-                      int mobileNumber, String address ,String specialization, String degree, ArrayList<Course> courses) {
-        super(email, password, firstName, lastName);
+                      int mobileNumber, String address ,String specialization, String degree, ArrayList<Course> courses, String photo) {
+        super(email, password, firstName, lastName, photo);
         this.mobileNumber = mobileNumber;
         this.address = address;
         this.specialization = specialization;
