@@ -9,4 +9,9 @@
     <color name="white">#FFFFFFFF</color>
     <color name="colorPrimary">#1565C0</color>
     <color name="colorAccent">#FF7F50</color>
+    <style name="CardViewStyle" parent="CardView">
+        <item name="cardElevation">4dp</item>
+        <item name="cardCornerRadius">8dp</item>
+        <item name="contentPadding">10dp</item>
+    </style>
 </resources>

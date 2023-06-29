@@ -1,26 +1,22 @@
 package com.example.trainingcenterproject;
 
 public class Registration {
-    private int registrationId;
+
     private int courseId;
     private String traineeEmail;
     private String status;
 
     // Constructor
-    public Registration(int registrationId, int courseId, String traineeEmail, String status) {
-        this.registrationId = registrationId;
+    public Registration(int courseId, String traineeEmail, String status) {
+
         this.courseId = courseId;
         this.traineeEmail = traineeEmail;
         this.status = status;
     }
 
-    public int getRegistrationId() {
-        return registrationId;
-    }
 
-    public void setRegistrationId(int registrationId) {
-        this.registrationId = registrationId;
-    }
+
+
 
     public int getCourseId() {
         return courseId;
@@ -49,7 +45,6 @@ public class Registration {
     @Override
     public String toString() {
         return "Registration{" +
-                "registrationId=" + registrationId +
                 ", courseId=" + courseId +
                 ", traineeEmail=" + traineeEmail +
                 ", status='" + status + '\'' +

@@ -22,16 +22,16 @@ public class AddCourseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_course);
         DataBaseHelper dataBaseHelper = new DataBaseHelper(AddCourseActivity.this,"training",null,1);
-        instructorSpinner = findViewById(R.id.instructorSpinner);
+//        instructorSpinner = findViewById(R.id.instructorSpinner);
 
         final EditText nameEditText = findViewById(R.id.courseNameEditText);
         final EditText mainTopicsEditText = findViewById(R.id.mainTopicsEditText);
         final EditText prerequisitesEditText = findViewById(R.id.prerequisitesEditText);
-        final EditText registrationDeadlineEditText = findViewById(R.id.registrationDeadlineEditText);
-        final EditText startDateEditText = findViewById(R.id.startDateEditText);
-        final EditText scheduleEditText = findViewById(R.id.scheduleEditText);
-        final EditText venueEditText = findViewById(R.id.venueEditText);
-        populateInstructorSpinner();
+//        final EditText registrationDeadlineEditText = findViewById(R.id.registrationDeadlineEditText);
+//        final EditText startDateEditText = findViewById(R.id.startDateEditText);
+//        final EditText scheduleEditText = findViewById(R.id.scheduleEditText);
+//        final EditText venueEditText = findViewById(R.id.venueEditText);
+//        populateInstructorSpinner();
 
         Button addCourseButton = (Button) findViewById(R.id.addCourseButton);
         addCourseButton.setOnClickListener(new View.OnClickListener() {
@@ -56,32 +56,32 @@ public class AddCourseActivity extends AppCompatActivity {
                     newCourse.setPrerequisites(prerequisitesEditText.getText().toString());
                 }
 
-                String selectedInstructorEmail = instructorSpinner.getSelectedItem().toString();
-                newCourse.setInstructorEmail(selectedInstructorEmail);
+//                String selectedInstructorEmail = instructorSpinner.getSelectedItem().toString();
+//                newCourse.setInstructorEmail(selectedInstructorEmail);
 
-                if (registrationDeadlineEditText.getText().toString().isEmpty()) {
-                    newCourse.setRegistrationDeadline("No deadline");
-                } else {
-                    newCourse.setRegistrationDeadline(registrationDeadlineEditText.getText().toString());
-                }
-
-                if (startDateEditText.getText().toString().isEmpty()) {
-                    newCourse.setStartDate("Unknown");
-                } else {
-                    newCourse.setStartDate(startDateEditText.getText().toString());
-                }
-
-                if (scheduleEditText.getText().toString().isEmpty()) {
-                    newCourse.setSchedule("No schedule");
-                } else {
-                    newCourse.setSchedule(scheduleEditText.getText().toString());
-                }
-
-                if (venueEditText.getText().toString().isEmpty()) {
-                    newCourse.setVenue("No venue specified");
-                } else {
-                    newCourse.setVenue(venueEditText.getText().toString());
-                }
+//                if (registrationDeadlineEditText.getText().toString().isEmpty()) {
+//                    newCourse.setRegistrationDeadline("No deadline");
+//                } else {
+//                    newCourse.setRegistrationDeadline(registrationDeadlineEditText.getText().toString());
+//                }
+//
+//                if (startDateEditText.getText().toString().isEmpty()) {
+//                    newCourse.setStartDate("Unknown");
+//                } else {
+//                    newCourse.setStartDate(startDateEditText.getText().toString());
+//                }
+//
+//                if (scheduleEditText.getText().toString().isEmpty()) {
+//                    newCourse.setSchedule("No schedule");
+//                } else {
+//                    newCourse.setSchedule(scheduleEditText.getText().toString());
+//                }
+//
+//                if (venueEditText.getText().toString().isEmpty()) {
+//                    newCourse.setVenue("No venue specified");
+//                } else {
+//                    newCourse.setVenue(venueEditText.getText().toString());
+//                }
                 dataBaseHelper.insertCourse(newCourse);
                 //Intent intent = new Intent(AddCourseActivity.this, viewCourses.class);
                 //AddCourseActivity.this.startActivity(intent);

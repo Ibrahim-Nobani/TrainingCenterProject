@@ -20,6 +20,12 @@
         <activity android:name=".InstructorListActivity"/>
         <activity android:name=".AdminDashboardActivity"/>
         <activity android:name=".CourseListActivity"/>
+        <activity android:name=".DeleteCourseActivity"/>
+        <activity android:name=".EditCourseActivity"/>
+        <activity android:name=".CourseTraineeListActivity"/>
+        <activity android:name=".PendingCoursesActivity"/>
+        <activity android:name=".MakeCourseAvailableActivity"/>
+        <activity android:name=".ViewAllActivity" />
         <activity
             android:name=".AddInstructorActivity"
             android:exported="false" />

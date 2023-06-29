@@ -15,7 +15,6 @@ public class AdminDashboardActivity extends AppCompatActivity {
 
         Button createCourseButton = findViewById(R.id.create_course_button);
         Button editDeleteCourseButton = findViewById(R.id.edit_delete_course_button);
-        Button courseRegistrationButton = findViewById(R.id.course_registration_button);
         Button decisionRegistrationButton = findViewById(R.id.decision_registration_button);
         Button viewProfilesButton = findViewById(R.id.view_profiles_button);
         Button viewCoursesButton = findViewById(R.id.view_courses);
@@ -39,30 +38,28 @@ public class AdminDashboardActivity extends AppCompatActivity {
         editDeleteCourseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Go to the "Edit/Delete Course" activity
+                Intent addCourse = new Intent(AdminDashboardActivity.this, DeleteCourseActivity.class);
+                startActivity(addCourse);
 
 
             }
         });
 
-        courseRegistrationButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Go to the "Course Registration" activity
-            }
-        });
+
 
         decisionRegistrationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Go to the "Decision Registration" activity
+                Intent addCourse = new Intent(AdminDashboardActivity.this, PendingCoursesActivity.class);
+                startActivity(addCourse);
             }
         });
 
         viewProfilesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Go to the "View Profiles" activity
+                Intent addCourse = new Intent(AdminDashboardActivity.this, ViewAllActivity.class);
+                startActivity(addCourse);
             }
         });
 

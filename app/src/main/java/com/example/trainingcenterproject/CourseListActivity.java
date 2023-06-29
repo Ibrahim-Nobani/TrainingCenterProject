@@ -1,9 +1,12 @@
 package com.example.trainingcenterproject;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -12,49 +15,54 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 public class CourseListActivity extends AppCompatActivity {
-    LinearLayout xLinearLayout;
+    LinearLayout courseList;
+    Button backButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_admin_list);
-        LinearLayout firstLinearLayout=new LinearLayout(this);
-        Button xbackButton = new Button(this);
-        xLinearLayout= new LinearLayout(this);
-        ScrollView scrollView=new ScrollView(this);
-        firstLinearLayout.setOrientation(LinearLayout.VERTICAL);
-        xLinearLayout.setOrientation(LinearLayout.VERTICAL);
+        setContentView(R.layout.activity_course_list);
 
-        xbackButton.setText("Back To Main");
-        xbackButton.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT));
-        firstLinearLayout.addView(xbackButton);
-        scrollView.addView(xLinearLayout);
-        firstLinearLayout.addView(scrollView);
+        courseList = findViewById(R.id.courseList);
+        backButton = findViewById(R.id.backButton);
 
-        setContentView(firstLinearLayout);
-
-        xbackButton.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 Intent intent = new Intent(CourseListActivity.this,MainActivity.class);
-                CourseListActivity.this.startActivity(intent);
+                startActivity(intent);
                 finish();
             }
         });
     }
+
     protected void onResume() {
         super.onResume();
-        DataBaseHelper dataBaseHelper =new DataBaseHelper(CourseListActivity.this,"training", null,1);
+        DataBaseHelper dataBaseHelper = new DataBaseHelper(CourseListActivity.this,"training", null,1);
         Cursor allCoursesCursor = dataBaseHelper.getAllCourses();
-        xLinearLayout.removeAllViews();
+        courseList.removeAllViews();
         while (allCoursesCursor.moveToNext()){
-            TextView textView =new TextView(CourseListActivity.this);
+            CardView cardView = new CardView(new ContextThemeWrapper(CourseListActivity.this, R.style.CardViewStyle), null, 0);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+            params.setMargins(0, 0, 0, 20);
+            cardView.setLayoutParams(params);
+
+            TextView textView = new TextView(CourseListActivity.this);
             textView.setText(
                     "ID= "+allCoursesCursor.getString(0)
                             +"\nTitle= "+allCoursesCursor.getString(1)
                             +"\nmainTopics= "+allCoursesCursor.getString(2)
+                            +"\nPre= "+allCoursesCursor.getString(3)
                             +"\n\n" );
-            xLinearLayout.addView(textView);
-
+            textView.setPadding(10,10,10,10);
+            textView.setTextSize(18);
+            textView.setTextColor(Color.parseColor("#000000"));
+            cardView.addView(textView);
+            courseList.addView(cardView);
         }
     }
 }
+

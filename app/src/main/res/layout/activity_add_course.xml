@@ -38,53 +38,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/mainTopicsEditText" />
 
-        <Spinner
-            android:id="@+id/instructorSpinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/prerequisitesEditText" />
-
-        <EditText
-            android:id="@+id/registrationDeadlineEditText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="Registration Deadline"
-            android:inputType="date"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/instructorSpinner" />
-
-        <EditText
-            android:id="@+id/startDateEditText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="Start Date"
-            android:inputType="date"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/registrationDeadlineEditText" />
-
-        <EditText
-            android:id="@+id/scheduleEditText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="Schedule"
-            android:inputType="textMultiLine"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/startDateEditText" />
-
-        <EditText
-            android:id="@+id/venueEditText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="Venue"
-            android:inputType="text"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/scheduleEditText" />
 
         <Button
             android:id="@+id/addCourseButton"
@@ -93,7 +46,7 @@
             android:text="Add Course"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/venueEditText" />
+            app:layout_constraintTop_toBottomOf="@+id/prerequisitesEditText" />
 
 
 

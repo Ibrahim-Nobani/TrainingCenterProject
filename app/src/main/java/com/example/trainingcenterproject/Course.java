@@ -12,10 +12,9 @@ public class Course {
     private String venue;
 
     // Constructor
-    public Course(int courseId,  String title, String mainTopics, String prerequisites,
+    public Course(String title, String mainTopics, String prerequisites,
                   String instructorEmail, String registrationDeadline, String startDate,
                   String schedule, String venue) {
-        this.courseId = courseId;
         this.title = title;
         this.mainTopics = mainTopics;
         this.prerequisites = prerequisites;
@@ -31,12 +30,11 @@ public class Course {
 // Getters and setters
 
 
-    public int getCourseId() {
-        return courseId;
-    }
-
     public void setCourseId(int courseId) {
         this.courseId = courseId;
+    }
+    public int getCourseId() {
+        return this.courseId;
     }
 
     public String getTitle() {

@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Create the database
         DataBaseHelper dbHelper = new DataBaseHelper(MainActivity.this, "training", null, 1);
-
+        dbHelper.addDummyData();
         // Initialize user input elements
         emailEditText = findViewById(R.id.emailEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
