@@ -1,19 +1,23 @@
 package com.example.trainingcenterproject.trainee;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -75,7 +79,7 @@ public class TraineeMainActivity extends AppCompatActivity {
         loadUserDetails();
         myCoursesFragment = new MyCoursesFragment();
         Bundle bundle = new Bundle();
-        bundle.putString("email",email);
+        bundle.putString("email", email);
         myCoursesFragment.setArguments(bundle);
         setButtonListener();
     }
@@ -85,14 +89,15 @@ public class TraineeMainActivity extends AppCompatActivity {
         loadUserDetails();
         getNotificationsFromDB();
         popNotifications();
+        callNotifications();
     }
 
-    private void setButtonListener(){
+    private void setButtonListener() {
 
         notifications.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(notificationsScroll.getVisibility() == View.VISIBLE)
+                if (notificationsScroll.getVisibility() == View.VISIBLE)
                     notificationsScroll.setVisibility(View.GONE);
                 else
                     notificationsScroll.setVisibility(View.VISIBLE);
@@ -147,7 +152,7 @@ public class TraineeMainActivity extends AppCompatActivity {
     }
 
     private void loadUserDetails() {
-        DataBaseHelper dataBaseHelper = new DataBaseHelper(TraineeMainActivity.this,"training", null,1);
+        DataBaseHelper dataBaseHelper = new DataBaseHelper(TraineeMainActivity.this, "training", null, 1);
         SharedPreferences sharedPreferences = getSharedPreferences("TrainingCenterPrefs", MODE_PRIVATE);
         email = sharedPreferences.getString("email", "");
         userName.setText("Hello, " + dataBaseHelper.getUserName(email));
@@ -155,23 +160,23 @@ public class TraineeMainActivity extends AppCompatActivity {
         result.putString("userEmail", email);
     }
 
-    private void getNotificationsFromDB(){
+    private void getNotificationsFromDB() {
         notificationsList.clear();
-        DataBaseHelper dataBaseHelper = new DataBaseHelper(TraineeMainActivity.this,"training", null,1);
+        DataBaseHelper dataBaseHelper = new DataBaseHelper(TraineeMainActivity.this, "training", null, 1);
         Cursor cursor = dataBaseHelper.getUserNotification(email);
-        while(cursor.moveToNext()){
-            notificationsList.add(new Notification(cursor.getInt(0),cursor.getString(1), cursor.getString(2)));
+        while (cursor.moveToNext()) {
+            notificationsList.add(new Notification(cursor.getInt(0), cursor.getString(1), cursor.getString(2)));
         }
     }
 
-    private void popNotifications(){
+    private void popNotifications() {
         notificationsLayout.removeAllViews();
-        if(notificationsList.isEmpty()){
+        if (notificationsList.isEmpty()) {
             numberOfNotifications.setVisibility(View.GONE);
-        }else{
+        } else {
             numberOfNotifications.setVisibility(View.VISIBLE);
             numberOfNotifications.setText(String.valueOf(notificationsList.size()));
-            for (Notification notification:notificationsList) {
+            for (Notification notification : notificationsList) {
                 LinearLayout linearLayout = new LinearLayout(TraineeMainActivity.this);
                 linearLayout.setOrientation(LinearLayout.HORIZONTAL);
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
@@ -196,7 +201,7 @@ public class TraineeMainActivity extends AppCompatActivity {
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        DataBaseHelper dataBaseHelper = new DataBaseHelper(TraineeMainActivity.this,"training", null,1);
+                        DataBaseHelper dataBaseHelper = new DataBaseHelper(TraineeMainActivity.this, "training", null, 1);
                         dataBaseHelper.deleteNotification(notification.getId());
                         getNotificationsFromDB();
                         popNotifications();
@@ -209,26 +214,40 @@ public class TraineeMainActivity extends AppCompatActivity {
         }
     }
 
-    public void callNotifications(){
+    public void callNotifications() {
+        if(called)
+            return;
+        else
+            called = true;
+
+        for (Notification notification : notificationsList) {
+            createNotification("test",notification.getContent());
+        }
+    }
+
+    private static final String MY_CHANNEL_ID = "my_chanel_1";
+    private static final String MY_CHANNEL_NAME = "My channel";
+
+    private void createNotificationChannel() {
+        int importance = NotificationManager.IMPORTANCE_DEFAULT;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(MY_CHANNEL_ID, MY_CHANNEL_NAME, importance);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
+        }
 
     }
 
-//    private static final String MY_CHANNEL_ID = "my_chanel_1";
-//    private static final String MY_CHANNEL_NAME = "My channel";
-//    private void createNotificationChannel() {
-//        int importance = NotificationManager.IMPORTANCE_DEFAULT;
-//        NotificationChannel channel = new NotificationChannel(MY_CHANNEL_ID, MY_CHANNEL_NAME, importance);
-//        NotificationManager notificationManager = getSystemService(NotificationManager.class);
-//        if (notificationManager != null) {
-//            notificationManager.createNotificationChannel(channel);
-//        }
-//    }
-//
-//    public void createNotification(String title, String body) {
-//        Intent intent = new Intent(this, MainActivity.class);
-//        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
-//        createNotificationChannel(); NotificationCompat.Builder builder = new NotificationCompat.Builder(this, MY_CHANNEL_ID) .setSmallIcon(R.mipmap.ic_launcher) .setContentTitle(title) .setContentText(body) .setStyle(new NotificationCompat.BigTextStyle().bigText(body)) .setPriority(NotificationCompat.PRIORITY_DEFAULT) .setContentIntent(pendingIntent);
-//        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-//        notificationManager.notify(NOTIFICATION_ID, builder.build());
-//    }
+    public void createNotification(String title, String body) {
+        Intent intent = new Intent(this, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+        createNotificationChannel();
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, MY_CHANNEL_ID).setSmallIcon(R.mipmap.ic_launcher).setContentTitle(title).setContentText(body).setStyle(new NotificationCompat.BigTextStyle().bigText(body)).setPriority(NotificationCompat.PRIORITY_DEFAULT).setContentIntent(pendingIntent);
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            notificationManager.notify(123, builder.build());
+        }
+    }
 }
