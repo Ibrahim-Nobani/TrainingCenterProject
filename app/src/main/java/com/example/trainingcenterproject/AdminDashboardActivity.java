@@ -1,13 +1,24 @@
 package com.example.trainingcenterproject;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.FileNotFoundException;
 public class AdminDashboardActivity extends AppCompatActivity {
+    private String email;
+    private ImageView adminPhoto;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -18,6 +29,32 @@ public class AdminDashboardActivity extends AppCompatActivity {
         Button decisionRegistrationButton = findViewById(R.id.decision_registration_button);
         Button viewProfilesButton = findViewById(R.id.view_profiles_button);
         Button viewCoursesButton = findViewById(R.id.view_courses);
+        adminPhoto = findViewById(R.id.admin_photo);
+        DataBaseHelper dbHelper = new DataBaseHelper(this, "training", null, 1);
+        email = getIntent().getStringExtra("email");
+        if (email == null) {
+            Log.e("Email", "Email is null!");
+        } else {
+            Log.i("Email", "Email is: " + email);
+        }
+
+        Cursor res = dbHelper.getAdminPhoto(email);
+
+        if (res != null && res.moveToFirst()){
+            String fileName = res.getString(0);
+            try {
+                FileInputStream fis = openFileInput(fileName);
+                Bitmap bitmap = BitmapFactory.decodeStream(fis);
+                adminPhoto.setImageBitmap(bitmap);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } finally {
+                res.close();
+            }
+        }
+
+
+
 
         createCourseButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,7 +81,6 @@ public class AdminDashboardActivity extends AppCompatActivity {
 
             }
         });
-
 
 
         decisionRegistrationButton.setOnClickListener(new View.OnClickListener() {

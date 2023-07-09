@@ -1,8 +1,12 @@
 package com.example.trainingcenterproject;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -29,6 +33,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        // Check if the permission is already granted
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            // If not, request it
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
+        }
+
+
 
         // Create the database
         DataBaseHelper dbHelper = new DataBaseHelper(MainActivity.this, "training", null, 1);
@@ -69,11 +80,13 @@ public class MainActivity extends AppCompatActivity {
                     switch (role) {
                         case "admin":
                             Intent adminIntent = new Intent(MainActivity.this, AdminDashboardActivity.class);
+                            adminIntent.putExtra("email", email);
                             startActivity(adminIntent);
                             break;
                         case "trainee":
                             saveNameIntoPreferences();
                             Intent traineeIntent = new Intent(MainActivity.this, TraineeMainActivity.class);
+                            traineeIntent.putExtra("email", email);
                             startActivity(traineeIntent);
                             //Toast.makeText(MainActivity.this, "Trainee Activity is under development.", Toast.LENGTH_SHORT).show();
                             break;
@@ -81,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
                              Intent instructorIntent = new Intent(MainActivity.this, InstructorDashboardActivity.class);
                              instructorIntent.putExtra("email", email);
                              startActivity(instructorIntent);
-                            Toast.makeText(MainActivity.this, "Instructor Activity is under development.", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(MainActivity.this, "Instructor Activity is under development.", Toast.LENGTH_SHORT).show();
                             break;
                         default:
                             Toast.makeText(MainActivity.this, "Sign in failed. Invalid role", Toast.LENGTH_SHORT).show();

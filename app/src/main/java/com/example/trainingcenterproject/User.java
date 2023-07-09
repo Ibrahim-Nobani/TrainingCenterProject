@@ -7,6 +7,9 @@ public class User {
     private String lastName;
     private String photo;
 
+    private String photoPath;
+
+
     // Constructor
     public User(String email, String password, String firstName, String lastName, String photo) {
         this.email = email;
@@ -49,5 +52,15 @@ public class User {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+
+    // Add getter and setter for photoPath
+    public String getPhotoPath() {
+        return photoPath;
+    }
+
+    public void setPhotoPath(String photoPath) {
+        this.photoPath = photoPath;
     }
 }
