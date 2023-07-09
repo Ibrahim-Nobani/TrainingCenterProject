@@ -40,7 +40,7 @@ public class ViewAllActivity extends AppCompatActivity {
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
-                Intent intent = new Intent(ViewAllActivity.this, MainActivity.class);
+                Intent intent = new Intent(ViewAllActivity.this, AdminDashboardActivity.class);
                 ViewAllActivity.this.startActivity(intent);
                 finish();
             }

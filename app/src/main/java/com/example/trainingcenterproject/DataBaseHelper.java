@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 
 import androidx.annotation.Nullable;
 
+import com.example.trainingcenterproject.trainee.Notification;
+
 import java.util.ArrayList;
 
 public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
@@ -23,6 +25,7 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
         sqLiteDatabase.execSQL("CREATE TABLE Course (courseId INTEGER PRIMARY KEY autoincrement, title TEXT, mainTopics TEXT, prerequisites TEXT, instructorEmail TEXT, registrationDeadline TEXT, startDate TEXT, schedule TEXT, venue TEXT, FOREIGN KEY (instructorEmail) REFERENCES Instructor(email))");
         sqLiteDatabase.execSQL("CREATE TABLE Registration (registrationId INTEGER PRIMARY KEY autoincrement, courseId INTEGER, traineeEmail TEXT, status TEXT, FOREIGN KEY (courseId) REFERENCES Course(courseId), FOREIGN KEY (traineeEmail) REFERENCES Trainee(email))");
         sqLiteDatabase.execSQL("CREATE TABLE InstructorCourse (instructorEmail TEXT, courseId INTEGER, FOREIGN KEY (instructorEmail) REFERENCES Instructor(email), FOREIGN KEY (courseId) REFERENCES Course(courseId))");
+        sqLiteDatabase.execSQL("CREATE TABLE Notifications(id INTEGER PRIMARY KEY autoincrement, userEmail TEXT, content TEXT, FOREIGN KEY (userEmail) REFERENCES USER(email))");
     }
 
     @Override
@@ -124,15 +127,53 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
         sqLiteDatabase.insert("Registration", null, contentValues);
     }
 
+    public void insertNotification(Notification notification){
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("userEmail",notification.getUserEmail());
+        contentValues.put("content",notification.getContent());
+        sqLiteDatabase.insert("Notifications", null, contentValues);
+    }
+
+    public Cursor getUserNotification(String email){
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        return sqLiteDatabase.rawQuery("SELECT * from Notifications where userEmail = ?",new String[]{email});
+    }
+
+    public void deleteNotification(int id){
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        sqLiteDatabase.delete("Notifications","id = ?",new String[]{String.valueOf(id)});
+    }
+
     public Cursor getAllAdmins() {
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
         return sqLiteDatabase.rawQuery("SELECT Admin.email, User.firstName, User.lastName FROM Admin INNER JOIN User ON Admin.email = User.email", null);
     }
 
-
     public Cursor getAllTrainees() {
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
         return sqLiteDatabase.rawQuery("SELECT * FROM Trainee INNER JOIN User ON Trainee.email = User.email", null);
+    }
+
+    public Trainee getTraineeDetails(String email){
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        Cursor trainee = sqLiteDatabase.rawQuery("SELECT User.*, Trainee.*\n" +
+                "FROM User\n" +
+                "JOIN Trainee ON User.email = Trainee.email\n" +
+                "WHERE User.email = ?", new String[]{email});
+        if (!trainee.moveToFirst()) {
+            trainee.close();
+            return null;
+        } else{
+            return new Trainee(trainee.getString(0),trainee.getString(1),trainee.getString(2),trainee.getString(3),Integer.parseInt(trainee.getString(5)),trainee.getString(6),null);
+        }
+    }
+
+    public void updateTrainee(Trainee trainee){
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        int delete = sqLiteDatabase.delete("Trainee","email = ?",new String[]{trainee.getEmail()});
+        delete = sqLiteDatabase.delete("User","email = ?",new String[]{trainee.getEmail()});
+        insertTrainee(trainee);
     }
 
     public Cursor getAllInstructors() {
@@ -144,9 +185,52 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
         return sqLiteDatabase.rawQuery("SELECT * FROM Course", null);
     }
+
+    public Cursor getCourses(String name){
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        return sqLiteDatabase.rawQuery("SELECT * FROM course WHERE title LIKE  ? ", new String[]{name});
+    }
+
+    public Cursor getTraineeCourses(String email){
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        return sqLiteDatabase.rawQuery("SELECT Course.title, Course.venue, Course.startDate, Course.schedule, Instructor.email AS instructorEmail, User.firstName || ' ' || User.lastName AS instructorName " +
+                "FROM Course " +
+                "JOIN Registration ON Course.courseId = Registration.courseId " +
+                "JOIN InstructorCourse ON Course.courseId = InstructorCourse.courseId " +
+                "JOIN Instructor ON InstructorCourse.instructorEmail = Instructor.email " +
+                "JOIN User ON Instructor.email = User.email " +
+                "WHERE Registration.traineeEmail = ? " +
+                "AND DATE(Course.registrationDeadline) > DATE('now')",new String[]{email});
+    }
+
+
+    public Cursor getTraineePastCourses(String email){
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        return sqLiteDatabase.rawQuery(String.format("SELECT Course.title, Course.startDate,Course.registrationDeadline, User.firstName || ' ' || User.lastName AS instructorName FROM Course JOIN Registration ON Course.courseId = Registration.courseId JOIN InstructorCourse ON Course.courseId = InstructorCourse.courseId JOIN Instructor ON InstructorCourse.instructorEmail = Instructor.email JOIN User ON Instructor.email = User.email WHERE Registration.traineeEmail = ? AND DATE(Course.registrationDeadline) < DATE('now')"),new String[]{email});
+    }
+
+    public Cursor getAllAvailableCourses(){
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        return sqLiteDatabase.rawQuery(String.format("SELECT DISTINCT Course.title,Course.prerequisites,Course.startDate,Course.schedule, User.firstName || ' ' || User.lastName AS instructorName FROM Course JOIN Registration ON Course.courseId = Registration.courseId JOIN InstructorCourse ON Course.courseId = InstructorCourse.courseId JOIN Instructor ON InstructorCourse.instructorEmail = Instructor.email JOIN User ON Instructor.email = User.email WHERE DATE(Course.registrationDeadline) > DATE('now')"),null);
+    }
+
+    public Cursor getAllPastCourses(){
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        return sqLiteDatabase.rawQuery("SELECT DISTINCT Course.title, Course.startDate,Course.registrationDeadline, User.firstName || ' ' || User.lastName AS instructorName FROM Course JOIN Registration ON Course.courseId = Registration.courseId JOIN InstructorCourse ON Course.courseId = InstructorCourse.courseId JOIN Instructor ON InstructorCourse.instructorEmail = Instructor.email JOIN User ON Instructor.email = User.email WHERE DATE(Course.registrationDeadline) < DATE('now')",null);
+    }
+
+    public Cursor getAvailableCourses(String name){
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        return sqLiteDatabase.rawQuery(String.format("SELECT DISTINCT Course.title, Course.startDate,Course.registrationDeadline, User.firstName || ' ' || User.lastName AS instructorName FROM Course JOIN Registration ON Course.courseId = Registration.courseId JOIN InstructorCourse ON Course.courseId = InstructorCourse.courseId JOIN Instructor ON InstructorCourse.instructorEmail = Instructor.email JOIN User ON Instructor.email = User.email WHERE DATE(Course.registrationDeadline) > DATE('now') AND Course.title LIKE ?"),new String[]{name});
+    }
+
+    public Cursor getPastCourses(String name){
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        return sqLiteDatabase.rawQuery(String.format("SELECT DISTINCT Course.title,Course.startDate,Course.registrationDeadline, User.firstName || ' ' || User.lastName AS instructorName FROM Course JOIN Registration ON Course.courseId = Registration.courseId JOIN InstructorCourse ON Course.courseId = InstructorCourse.courseId JOIN Instructor ON InstructorCourse.instructorEmail = Instructor.email JOIN User ON Instructor.email = User.email WHERE DATE(Course.registrationDeadline) < DATE('now')AND Course.title LIKE ?"),new String[]{name});
+    }
+
     public Cursor getTraineesForCourse(int courseId) {
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
-
         return sqLiteDatabase.rawQuery("SELECT Trainee.email, User.firstName, User.lastName " +
                         "FROM Trainee " +
                         "INNER JOIN User ON Trainee.email = User.email " +
@@ -154,18 +238,17 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
                         "WHERE Registration.courseId = ? AND Registration.status = 'Confirmed'",
                 new String[]{String.valueOf(courseId)});
     }
+
     public Cursor getPendingCourses() {
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
 
-        return sqLiteDatabase.rawQuery("SELECT Course.title, Trainee.email, User.firstName, User.lastName " +
-                "FROM Trainee " +
-                "INNER JOIN User ON Trainee.email = User.email " +
-                "INNER JOIN Registration ON Trainee.email = Registration.traineeEmail " +
-                "INNER JOIN Course ON Registration.courseId = Course.courseId " +
-                "WHERE Registration.status = 'Pending'", null);
+        return sqLiteDatabase.rawQuery("SELECT Course.courseId, Course.title, Course.venue, Course.startDate, Course.schedule, Instructor.email AS instructorEmail, Instructor.name AS instructorName " +
+                "FROM Course " +
+                "JOIN Registration ON Course.courseId = Registration.courseId " +
+                "JOIN Instructor ON Course.instructorEmail = Instructor.email " +
+                "WHERE Registration.traineeEmail = ? " +
+                "AND DATE(Course.registrationDeadline) > DATE('now')", null);
     }
-
-
 
     public void acceptRegistration(String courseName, String traineeEmail) {
         SQLiteDatabase db = getWritableDatabase();
@@ -200,6 +283,7 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
         cursor.close();
         db.close();
     }
+
     public Course getCourse(int courseId) {
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -222,14 +306,22 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
         }
     }
 
-
-
-
-
-
-    public String getUserRole(String email, String password) {
+    public String getUserName(String email) {
         SQLiteDatabase db = this.getWritableDatabase();
 
+        String query = "SELECT * FROM User WHERE email = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{email});
+
+        if (!cursor.moveToFirst()) {
+            cursor.close();
+            return null;
+        }
+
+        return cursor.getString(2);
+    }
+
+        public String getUserRole(String email, String password) {
+        SQLiteDatabase db = this.getWritableDatabase();
 
         String query = "SELECT * FROM User WHERE email = ? AND password = ?";
         Cursor cursor = db.rawQuery(query, new String[]{email, password});
@@ -263,7 +355,6 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
         return null;
     }
 
-
     public boolean deleteCourse(int courseId) {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete("Course", "courseId = ?", new String[]{String.valueOf(courseId)}) > 0;
@@ -283,9 +374,6 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
 
         return db.update("Course", contentValues, "courseId = ?", new String[] {String.valueOf(courseId)}) > 0;
     }
-
-
-
 
     public void addDummyData() {
         SQLiteDatabase db = getWritableDatabase();
@@ -393,14 +481,13 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
         Registration registration12 = new Registration(course3.getCourseId(), trainee5.getEmail(), "Pending");
         insertRegistration(registration12);
 
+        Notification notification1 = new Notification("trainee1@example.com","This is a test");
+        insertNotification(notification1);
 
         // Close the database connection
         db.close();
 
 
     }
-
-
-
 
 }

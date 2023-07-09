@@ -1,5 +1,6 @@
 package com.example.trainingcenterproject;
 
+
 public class Course {
     private int courseId;
     private String title;

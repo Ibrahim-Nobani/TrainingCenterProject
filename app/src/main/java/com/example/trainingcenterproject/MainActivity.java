@@ -10,6 +10,8 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.trainingcenterproject.trainee.TraineeMainActivity;
+
 public class MainActivity extends AppCompatActivity {
 
     // User Input Elements
@@ -75,9 +77,10 @@ public class MainActivity extends AppCompatActivity {
                             startActivity(adminIntent);
                             break;
                         case "trainee":
-                            // Intent traineeIntent = new Intent(MainActivity.this, TraineeActivity.class);
-                            // startActivity(traineeIntent);
-                            Toast.makeText(MainActivity.this, "Trainee Activity is under development.", Toast.LENGTH_SHORT).show();
+                            saveNameIntoPreferences();
+                            Intent traineeIntent = new Intent(MainActivity.this, TraineeMainActivity.class);
+                            startActivity(traineeIntent);
+                            //Toast.makeText(MainActivity.this, "Trainee Activity is under development.", Toast.LENGTH_SHORT).show();
                             break;
                         case "instructor":
                             // Intent instructorIntent = new Intent(MainActivity.this, InstructorActivity.class);
@@ -130,6 +133,13 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("email", emailEditText.getText().toString());
         editor.putString("password", passwordEditText.getText().toString());
+        editor.apply();
+    }
+
+    private void saveNameIntoPreferences(){
+        SharedPreferences sharedPreferences = getSharedPreferences("TrainingCenterPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("email", emailEditText.getText().toString());
         editor.apply();
     }
 
