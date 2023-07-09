@@ -1,14 +1,21 @@
 package com.example.trainingcenterproject.trainee;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.annotation.SuppressLint;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -43,6 +50,8 @@ public class TraineeMainActivity extends AppCompatActivity {
 
     ArrayList<Notification> notificationsList = new ArrayList<Notification>();
 
+    boolean called = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +59,8 @@ public class TraineeMainActivity extends AppCompatActivity {
         scrollView = (ScrollView) findViewById(R.id.trainee_scroll_courses);
         userName = (TextView) findViewById(R.id.trainee_name_display);
         numberOfNotifications = (TextView) findViewById(R.id.notifications_number_trainee);
-
+        numberOfNotifications.setVisibility(View.GONE);
+        numberOfNotifications.setTextColor(Color.WHITE);
         notifications = (Button) findViewById(R.id.trainee_notifications_button);
         editProfile = (Button) findViewById(R.id.edit_profile_trainee);
         signOut = (Button) findViewById(R.id.sign_out_trainee);
@@ -73,7 +83,8 @@ public class TraineeMainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         loadUserDetails();
-        setNotifications();
+        getNotificationsFromDB();
+        popNotifications();
     }
 
     private void setButtonListener(){
@@ -144,19 +155,80 @@ public class TraineeMainActivity extends AppCompatActivity {
         result.putString("userEmail", email);
     }
 
-    private void setNotifications(){
-        notificationsLayout.removeAllViews();
+    private void getNotificationsFromDB(){
+        notificationsList.clear();
         DataBaseHelper dataBaseHelper = new DataBaseHelper(TraineeMainActivity.this,"training", null,1);
         Cursor cursor = dataBaseHelper.getUserNotification(email);
         while(cursor.moveToNext()){
-            TextView textView = new TextView(TraineeMainActivity.this);
-            textView.setText(String.format("Content= %s\n", cursor.getString(1)));
-            textView.setPadding(10,5,10,5);
-            textView.setTextSize(18);
-            textView.setTextColor(Color.parseColor("#000000"));
-            notificationsLayout.addView(textView);
+            notificationsList.add(new Notification(cursor.getInt(0),cursor.getString(1), cursor.getString(2)));
         }
     }
 
+    private void popNotifications(){
+        notificationsLayout.removeAllViews();
+        if(notificationsList.isEmpty()){
+            numberOfNotifications.setVisibility(View.GONE);
+        }else{
+            numberOfNotifications.setVisibility(View.VISIBLE);
+            numberOfNotifications.setText(String.valueOf(notificationsList.size()));
+            for (Notification notification:notificationsList) {
+                LinearLayout linearLayout = new LinearLayout(TraineeMainActivity.this);
+                linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                );
+                layoutParams.gravity = Gravity.CENTER;
+                linearLayout.setLayoutParams(layoutParams);
 
+                TextView textView = new TextView(TraineeMainActivity.this);
+                textView.setText(String.format("Content= %s\n", notification.getContent()));
+                textView.setPadding(10, 5, 10, 5);
+                textView.setTextSize(18);
+                textView.setTextColor(Color.parseColor("#000000"));
+
+                Button button = new Button(TraineeMainActivity.this);
+                button.setText("X");
+                button.setLayoutParams(new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                ));
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        DataBaseHelper dataBaseHelper = new DataBaseHelper(TraineeMainActivity.this,"training", null,1);
+                        dataBaseHelper.deleteNotification(notification.getId());
+                        getNotificationsFromDB();
+                        popNotifications();
+                    }
+                });
+                linearLayout.addView(textView);
+                linearLayout.addView(button);
+                notificationsLayout.addView(linearLayout);
+            }
+        }
+    }
+
+    public void callNotifications(){
+
+    }
+
+//    private static final String MY_CHANNEL_ID = "my_chanel_1";
+//    private static final String MY_CHANNEL_NAME = "My channel";
+//    private void createNotificationChannel() {
+//        int importance = NotificationManager.IMPORTANCE_DEFAULT;
+//        NotificationChannel channel = new NotificationChannel(MY_CHANNEL_ID, MY_CHANNEL_NAME, importance);
+//        NotificationManager notificationManager = getSystemService(NotificationManager.class);
+//        if (notificationManager != null) {
+//            notificationManager.createNotificationChannel(channel);
+//        }
+//    }
+//
+//    public void createNotification(String title, String body) {
+//        Intent intent = new Intent(this, MainActivity.class);
+//        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+//        createNotificationChannel(); NotificationCompat.Builder builder = new NotificationCompat.Builder(this, MY_CHANNEL_ID) .setSmallIcon(R.mipmap.ic_launcher) .setContentTitle(title) .setContentText(body) .setStyle(new NotificationCompat.BigTextStyle().bigText(body)) .setPriority(NotificationCompat.PRIORITY_DEFAULT) .setContentIntent(pendingIntent);
+//        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+//        notificationManager.notify(NOTIFICATION_ID, builder.build());
+//    }
 }
