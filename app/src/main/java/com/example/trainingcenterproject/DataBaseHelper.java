@@ -18,7 +18,7 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL("CREATE TABLE User (email TEXT PRIMARY KEY, password varchar(15), firstName varchar(20), lastName varchar(20))");
+        sqLiteDatabase.execSQL("CREATE TABLE User (email TEXT PRIMARY KEY, password varchar(15), firstName varchar(20), lastName varchar(20), photo TEXT)");
         sqLiteDatabase.execSQL("CREATE TABLE Admin (email TEXT PRIMARY KEY, FOREIGN KEY (email) REFERENCES User(email))");
         sqLiteDatabase.execSQL("CREATE TABLE Instructor (email TEXT PRIMARY KEY, mobileNumber INTEGER, address TEXT, specialization TEXT, degree TEXT, FOREIGN KEY (email) REFERENCES User(email))");
         sqLiteDatabase.execSQL("CREATE TABLE Trainee (email TEXT PRIMARY KEY, mobileNumber INTEGER, address TEXT, FOREIGN KEY (email) REFERENCES User(email))");
@@ -41,6 +41,7 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
         contentValues.put("password", admin.getPassword());
         contentValues.put("firstName", admin.getFirstName());
         contentValues.put("lastName", admin.getLastName());
+        contentValues.put("photo", admin.getPhotoPath());
         sqLiteDatabase.insert("User", null, contentValues);
         contentValuesUser.put("email", admin.getEmail());
         sqLiteDatabase.insert("Admin", null, contentValuesUser);
@@ -54,6 +55,7 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
         contentValues.put("password", instructor.getPassword());
         contentValues.put("firstName", instructor.getFirstName());
         contentValues.put("lastName", instructor.getLastName());
+        contentValues.put("photo", instructor.getPhotoPath());
         sqLiteDatabase.insert("User", null, contentValues);
         contentValuesUser.put("email", instructor.getEmail());
         contentValuesUser.put("mobileNumber", instructor.getMobileNumber());
@@ -85,6 +87,7 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
         contentValues.put("password", trainee.getPassword());
         contentValues.put("firstName", trainee.getFirstName());
         contentValues.put("lastName", trainee.getLastName());
+        contentValues.put("photo", trainee.getPhotoPath());
         sqLiteDatabase.insert("User", null, contentValues);
         contentValuesUser.put("email", trainee.getEmail());
         contentValuesUser.put("mobileNumber", trainee.getMobileNumber());
@@ -124,6 +127,26 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
         contentValues.put("status", Register.getStatus());
         sqLiteDatabase.insert("Registration", null, contentValues);
     }
+    public Cursor getInstructor(String email) {
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        return sqLiteDatabase.rawQuery("SELECT Instructor.email, User.firstName, User.lastName, User.password, Instructor.mobileNumber, Instructor.address, Instructor.specialization, Instructor.degree FROM Instructor INNER JOIN User ON Instructor.email = User.email WHERE Instructor.email = ?", new String[]{email});
+    }
+
+    public Cursor getAdminPhoto(String email) {
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        return sqLiteDatabase.rawQuery("SELECT User.photo FROM Admin INNER JOIN User ON Admin.email = User.email WHERE Admin.email = ?", new String[]{email});
+    }
+    public Cursor getInstructorPhoto(String email) {
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        return sqLiteDatabase.rawQuery("SELECT User.photo FROM Instructor INNER JOIN User ON Instructor.email = User.email WHERE Instructor.email = ?", new String[]{email});
+    }
+
+    public Cursor getTraineePhoto(String email) {
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        return sqLiteDatabase.rawQuery("SELECT User.photo FROM Trainee INNER JOIN User ON Trainee.email = User.email WHERE Trainee.email = ?", new String[]{email});
+    }
+
+
 
     public void insertRegistrationInfo(int courseId, String traineeEmail, String status) {
         Registration Register = new Registration(courseId, traineeEmail, status);
@@ -256,6 +279,17 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
                 "JOIN Instructor ON Course.instructorEmail = Instructor.email " +
                 "WHERE Registration.traineeEmail = ? " +
                 "AND DATE(Course.registrationDeadline) > DATE('now')", null);
+    }
+
+    public Cursor getPendingCoursesAdmin() {
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+
+        return sqLiteDatabase.rawQuery("SELECT Course.title, Trainee.email, User.firstName, User.lastName " +
+                "FROM Trainee " +
+                "INNER JOIN User ON Trainee.email = User.email " +
+                "INNER JOIN Registration ON Trainee.email = Registration.traineeEmail " +
+                "INNER JOIN Course ON Registration.courseId = Course.courseId " +
+                "WHERE Registration.status = 'Pending'", null);
     }
 
     public void acceptRegistration(String courseName, String traineeEmail) {
@@ -410,11 +444,9 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         ContentValues contentValuesInstructor = new ContentValues();
-        contentValues.put("email", email);
         contentValues.put("firstName", firstName);
         contentValues.put("lastName", lastName);
         contentValues.put("password", password);
-        contentValuesInstructor.put("email", email);
         contentValuesInstructor.put("mobileNumber", mobileNumber);
         contentValuesInstructor.put("address", address);
         contentValuesInstructor.put("specialization", specialization);
@@ -450,6 +482,8 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
 
 
 
+
+
         // Add dummy admins
         Admin admin1 = new Admin("a", "a", "John", "Doe", "p.png");
         insertAdmin(admin1);
@@ -469,7 +503,7 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
 
 
         // Add dummy trainees
-        Trainee trainee1 = new Trainee("trainee1@example.com", "trainee1pass", "Emma", "Brown", 433443, "789 Road, Village",  "p.png");
+        Trainee trainee1 = new Trainee("3", "3", "Emma", "Brown", 433443, "789 Road, Village",  "p.png");
         insertTrainee(trainee1);
 
         Trainee trainee2 = new Trainee("trainee2@example.com", "trainee2pass", "Jacob", "Davis", 433443, "456 Lane, County","p.png");
@@ -495,7 +529,7 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
         Course course2 = new Course( "Motion, forces, and energy", "None", "", instructor2.getEmail(), "2023-07-25", "2023-07-15", "mon 11:00 wed 12:00", "Laboratory B" );
         insertCourse(course2);
 
-        Course course3 = new Course( "Atoms, molecules, and reactions", "None",  "", instructor3.getEmail(), "2023-07-06", "2023-07-20", "mon 8:00 wed 8:00", "Laboratory C");
+        Course course3 = new Course( "Atoms, molecules, and reactions", "None",  "", instructor3.getEmail(), "2023-07-26", "2023-07-20", "mon 8:00 wed 8:00", "Laboratory C");
         insertCourse(course3);
 
         // Associate instructors with courses

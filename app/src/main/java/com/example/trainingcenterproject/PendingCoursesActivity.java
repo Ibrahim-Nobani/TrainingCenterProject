@@ -40,7 +40,7 @@ public class PendingCoursesActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         DataBaseHelper dataBaseHelper = new DataBaseHelper(PendingCoursesActivity.this,"training", null,1);
-        Cursor allCoursesCursor = dataBaseHelper.getPendingCourses();
+        Cursor allCoursesCursor = dataBaseHelper.getPendingCoursesAdmin();
         courseList.removeAllViews();
         while (allCoursesCursor.moveToNext()){
             final String courseName = allCoursesCursor.getString(0); // Save courseId as a final variable

@@ -87,6 +87,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/specializationEditText" />
+    <Button
+        android:id="@+id/pickImageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pick Photo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/degreeSpinner" />
 
     <Button
         android:id="@+id/registerButton"
@@ -95,6 +103,6 @@
         android:text="Register"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/degreeSpinner" />
+        app:layout_constraintTop_toBottomOf="@+id/pickImageButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
