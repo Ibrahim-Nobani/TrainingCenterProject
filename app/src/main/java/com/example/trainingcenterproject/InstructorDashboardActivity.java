@@ -43,6 +43,7 @@ public class InstructorDashboardActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent addCourse = new Intent(InstructorDashboardActivity.this, InstructorTraineeListActivity.class);
+                email = getIntent().getStringExtra("email");
                 addCourse.putExtra("email", email);
                 startActivity(addCourse);
 
@@ -52,8 +53,12 @@ public class InstructorDashboardActivity extends AppCompatActivity {
         viewProfileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent addCourse = new Intent(InstructorDashboardActivity.this, EditInstructorActivity.class);
-                startActivity(addCourse);
+                Intent profile = new Intent(InstructorDashboardActivity.this, EditInstructorActivity.class);
+                email = getIntent().getStringExtra("email");
+                profile.putExtra("email", email);
+                startActivity(profile);
+
+
 
 
             }

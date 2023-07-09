@@ -22,9 +22,7 @@ public class MainActivity extends AppCompatActivity {
     // Buttons
     private Button signInButton;
     private Button signUpButton;
-    private Button listButton;
-    private Button listInstructorButton;
-    private Button listTraineeButton;
+
 
 
     @Override
@@ -43,9 +41,6 @@ public class MainActivity extends AppCompatActivity {
         // Initialize buttons
         signInButton = findViewById(R.id.signInButton);
         signUpButton = findViewById(R.id.signUpButton);
-        listButton = findViewById(R.id.list);
-        listTraineeButton = findViewById(R.id.listTrinee);
-        listInstructorButton = findViewById(R.id.listInstruct);
 
         // Load preferences if they exist
         loadPreferences();
@@ -104,29 +99,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        listButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent adminList = new Intent(MainActivity.this, AdminListActivity.class);
-                startActivity(adminList);
-            }
-        });
 
-        listTraineeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent traineeList = new Intent(MainActivity.this, TraineeListActivity.class);
-                startActivity(traineeList);
-            }
-        });
-
-        listInstructorButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent instructorList = new Intent(MainActivity.this, InstructorListActivity.class);
-                startActivity(instructorList);
-            }
-        });
     }
 
     private void savePreferences() {

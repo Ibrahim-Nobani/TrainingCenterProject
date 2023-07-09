@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:text="Create a new course"
         android:layout_marginTop="10dp"
-        android:backgroundTint="@color/purple_500"
+        android:backgroundTint="@color/colorPrimary"
         android:textColor="@color/white"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         app:cornerRadius="8dp"/>
@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:text="View all Courses"
         android:layout_marginTop="10dp"
-        android:backgroundTint="@color/purple_500"
+        android:backgroundTint="@color/teal_700"
         android:textColor="@color/white"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         app:cornerRadius="8dp"/>
@@ -44,7 +44,7 @@
         android:layout_height="wrap_content"
         android:text="Manage Course"
         android:layout_marginTop="10dp"
-        android:backgroundTint="@color/purple_500"
+        android:backgroundTint="@color/purple_700"
         android:textColor="@color/white"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         app:cornerRadius="8dp"/>
@@ -55,7 +55,7 @@
         android:layout_height="wrap_content"
         android:text="Take decisions regarding the registration applications"
         android:layout_marginTop="10dp"
-        android:backgroundTint="@color/purple_500"
+        android:backgroundTint="@color/purple_200"
         android:textColor="@color/white"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         app:cornerRadius="8dp"/>
@@ -66,7 +66,7 @@
         android:layout_height="wrap_content"
         android:text="ٍStudents and Instructors"
         android:layout_marginTop="10dp"
-        android:backgroundTint="@color/purple_500"
+        android:backgroundTint="@color/teal_200"
         android:textColor="@color/white"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         app:cornerRadius="8dp"/>
