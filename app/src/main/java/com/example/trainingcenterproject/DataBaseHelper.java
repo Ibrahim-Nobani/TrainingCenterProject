@@ -224,7 +224,7 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
 
     public Cursor getTraineeCourses(String email){
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
-        return sqLiteDatabase.rawQuery("SELECT Course.title, Course.venue, Course.startDate, Course.schedule, Instructor.email AS instructorEmail, User.firstName || ' ' || User.lastName AS instructorName " +
+        return sqLiteDatabase.rawQuery("SELECT Course.title, Course.venue, Course.startDate, Course.schedule, Instructor.email AS instructorEmail, User.firstName || ' ' || User.lastName AS instructorName,  Course.registrationDeadline  " +
                 "FROM Course " +
                 "JOIN Registration ON Course.courseId = Registration.courseId " +
                 "JOIN InstructorCourse ON Course.courseId = InstructorCourse.courseId " +
@@ -240,9 +240,9 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
         return sqLiteDatabase.rawQuery(String.format("SELECT Course.title, Course.startDate,Course.registrationDeadline, User.firstName || ' ' || User.lastName AS instructorName FROM Course JOIN Registration ON Course.courseId = Registration.courseId JOIN InstructorCourse ON Course.courseId = InstructorCourse.courseId JOIN Instructor ON InstructorCourse.instructorEmail = Instructor.email JOIN User ON Instructor.email = User.email WHERE Registration.traineeEmail = ? AND DATE(Course.registrationDeadline) < DATE('now')"),new String[]{email});
     }
 
-    public Cursor getAllAvailableCourses(){
+    public Cursor getAllAvailableCourses(String email){
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
-        return sqLiteDatabase.rawQuery(String.format("SELECT DISTINCT Course.title,Course.prerequisites,Course.startDate,Course.schedule, User.firstName || ' ' || User.lastName AS instructorName FROM Course JOIN Registration ON Course.courseId = Registration.courseId JOIN InstructorCourse ON Course.courseId = InstructorCourse.courseId JOIN Instructor ON InstructorCourse.instructorEmail = Instructor.email JOIN User ON Instructor.email = User.email WHERE DATE(Course.registrationDeadline) > DATE('now')"),null);
+        return sqLiteDatabase.rawQuery(String.format("SELECT DISTINCT Course.title,Course.prerequisites,Course.startDate,Course.schedule, User.firstName || ' ' || User.lastName AS instructorName, Course.courseId, Course.registrationDeadline  FROM Course JOIN Registration ON Course.courseId = Registration.courseId JOIN InstructorCourse ON Course.courseId = InstructorCourse.courseId JOIN Instructor ON InstructorCourse.instructorEmail = Instructor.email JOIN User ON Instructor.email = User.email WHERE DATE(Course.registrationDeadline) > DATE('now') And Course.courseID NOT IN (select courseid from registration where traineeEmail = ?)"),new String[]{email});
     }
 
     public Cursor getAllPastCourses(){
@@ -250,9 +250,9 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
         return sqLiteDatabase.rawQuery("SELECT DISTINCT Course.title, Course.startDate,Course.registrationDeadline, User.firstName || ' ' || User.lastName AS instructorName FROM Course JOIN Registration ON Course.courseId = Registration.courseId JOIN InstructorCourse ON Course.courseId = InstructorCourse.courseId JOIN Instructor ON InstructorCourse.instructorEmail = Instructor.email JOIN User ON Instructor.email = User.email WHERE DATE(Course.registrationDeadline) < DATE('now')",null);
     }
 
-    public Cursor getAvailableCourses(String name){
+    public Cursor getAvailableCourses(String name, String email){
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
-        return sqLiteDatabase.rawQuery(String.format("SELECT DISTINCT Course.title,Course.prerequisites,Course.startDate,Course.schedule, User.firstName  ' '  User.lastName AS instructorName FROM Course JOIN Registration ON Course.courseId = Registration.courseId JOIN InstructorCourse ON Course.courseId = InstructorCourse.courseId JOIN Instructor ON InstructorCourse.instructorEmail = Instructor.email JOIN User ON Instructor.email = User.email WHERE DATE(Course.registrationDeadline) > DATE('now') AND Course.title LIKE ?"),new String[]{name});
+        return sqLiteDatabase.rawQuery(String.format("SELECT DISTINCT Course.title,Course.prerequisites,Course.startDate,Course.schedule, User.firstName || ' ' || User.lastName AS instructorName Course.courseId FROM Course JOIN Registration ON Course.courseId = Registration.courseId JOIN InstructorCourse ON Course.courseId = InstructorCourse.courseId JOIN Instructor ON InstructorCourse.instructorEmail = Instructor.email JOIN User ON Instructor.email = User.email WHERE DATE(Course.registrationDeadline) > DATE('now') AND Course.title LIKE ? NOT IN (select courseid from registration where traineeEmail = ?)"),new String[]{name,email});
     }
 
     public Cursor getPastCourses(String name){
@@ -526,7 +526,7 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
         Course course1 = new Course( "Basic math concepts", "None", "",instructor1.getEmail(), "2023-07-20", "2023-07-10", "mon 10:00 wed 10:00", "Conference Room A");
         insertCourse(course1);
 
-        Course course2 = new Course( "Motion, forces, and energy", "None", "", instructor2.getEmail(), "2023-07-18", "2023-07-15", "mon 11:00 wed 12:00", "Laboratory B" );
+        Course course2 = new Course( "Motion, forces, and energy", "None", "", instructor2.getEmail(), "2023-07-25", "2023-07-15", "mon 11:00 wed 12:00", "Laboratory B" );
         insertCourse(course2);
 
         Course course3 = new Course( "Atoms, molecules, and reactions", "None",  "", instructor3.getEmail(), "2023-07-26", "2023-07-20", "mon 8:00 wed 8:00", "Laboratory C");
