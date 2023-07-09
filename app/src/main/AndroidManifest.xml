@@ -38,6 +38,11 @@
         <activity android:name=".PendingCoursesActivity" />
         <activity android:name=".MakeCourseAvailableActivity" />
         <activity android:name=".ViewAllActivity" />
+        <activity android:name=".InstructorDashboardActivity" />
+        <activity android:name=".PrevCourseActivity" />
+        <activity android:name=".ScheduleActivity" />
+        <activity android:name=".EditInstructorActivity" />
+        <activity android:name=".InstructorTraineeListActivity" />
         <activity
             android:name=".AddInstructorActivity"
             android:exported="false" />

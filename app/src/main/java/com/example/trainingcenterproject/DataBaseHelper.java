@@ -91,6 +91,14 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
         contentValuesUser.put("address", trainee.getAddress());
         sqLiteDatabase.insert("Trainee", null, contentValuesUser);
     }
+    public boolean updateInstructorCourse(String instructorEmail, int courseId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("instructorEmail", instructorEmail);
+
+        return db.update("InstructorCourse", contentValues, "courseId = ?", new String[] {String.valueOf(courseId)}) > 0;
+    }
+
 
     public void insertCourse(Course course) {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
@@ -371,8 +379,59 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
         contentValues.put("startDate", startDate);
         contentValues.put("schedule", schedule);
         contentValues.put("venue", venue);
-
+        associateInstructorWithCourse(instructorEmail, courseId);
         return db.update("Course", contentValues, "courseId = ?", new String[] {String.valueOf(courseId)}) > 0;
+    }
+    public Cursor getCoursesByInstructor(String instructorEmail) {
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        return sqLiteDatabase.rawQuery(
+                "SELECT Course.* " +
+                        "FROM Course " +
+                        "INNER JOIN InstructorCourse ON Course.courseId = InstructorCourse.courseId " +
+                        "WHERE InstructorCourse.instructorEmail = ?",
+                new String[]{instructorEmail}
+        );
+    }
+
+    public Cursor getCurrentCoursesByInstructor(String instructorEmail) {
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        return sqLiteDatabase.rawQuery(
+                "SELECT Course.* " +
+                        "FROM Course " +
+                        "INNER JOIN InstructorCourse ON Course.courseId = InstructorCourse.courseId " +
+                        "WHERE InstructorCourse.instructorEmail = ? " +
+                        "AND Course.registrationDeadline > datetime('now')",
+                new String[]{instructorEmail}
+        );
+    }
+
+
+    public boolean updateInstructor(String email, String firstName, String lastName, String password, String mobileNumber, String address, String specialization, String degree) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        ContentValues contentValuesInstructor = new ContentValues();
+        contentValues.put("email", email);
+        contentValues.put("firstName", firstName);
+        contentValues.put("lastName", lastName);
+        contentValues.put("password", password);
+        contentValuesInstructor.put("email", email);
+        contentValuesInstructor.put("mobileNumber", mobileNumber);
+        contentValuesInstructor.put("address", address);
+        contentValuesInstructor.put("specialization", specialization);
+        contentValuesInstructor.put("degree", degree);
+        db.update("User",contentValues,null,null);
+        return db.update("Instructor", contentValuesInstructor, "email = ?", new String[] {email}) > 0;
+    }
+    public Cursor getTraineesForInstructor(String instructorEmail) {
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+
+        return sqLiteDatabase.rawQuery("SELECT Trainee.email, User.firstName, User.lastName " +
+                        "FROM Trainee " +
+                        "INNER JOIN User ON Trainee.email = User.email " +
+                        "INNER JOIN Registration ON Trainee.email = Registration.traineeEmail " +
+                        "INNER JOIN Course ON Registration.courseId = Course.courseId " +
+                        "WHERE Course.instructorEmail = ? AND Registration.status = 'Confirmed'",
+                new String[]{instructorEmail});
     }
 
     public void addDummyData() {
@@ -390,15 +449,16 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
 
 
 
+
         // Add dummy admins
-        Admin admin1 = new Admin("admin1@example.com", "admin123", "John", "Doe", "p.png");
+        Admin admin1 = new Admin("a", "a", "John", "Doe", "p.png");
         insertAdmin(admin1);
 
         Admin admin2 = new Admin("admin2@example.com", "admin456", "Jane", "Smith", "p.png");
         insertAdmin(admin2);
 
         // Add dummy instructors
-        Instructor instructor1 = new Instructor("instructor1@example.com", "instructor1pass", "Alice", "Smith", 1234567890, "123 Street, City", "Mathematics", "M.Sc", null, "");
+        Instructor instructor1 = new Instructor("i", "i", "Alice", "Smith", 1234567890, "123 Street, City", "Mathematics", "M.Sc", null, "");
         insertInstructor(instructor1);
 
         Instructor instructor2 = new Instructor("instructor2@example.com", "instructor2pass", "Bob", "Johnson", 96543210, "456 Avenue, Town", "Physics", "Ph.D", null, "");
@@ -429,17 +489,18 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
 
 
         // Add dummy courses
-        Course course1 = new Course( "Basic math concepts", "None", instructor1.getEmail(), "2023-07-01", "2023-07-10", "Mon-Fri, 9am-12pm", "Conference Room A", "gg");
+        Course course1 = new Course( "Basic math concepts", "None", "",instructor1.getEmail(), "2023-07-09", "2023-07-10", "mon 10:00 wed 10:00", "Conference Room A");
         insertCourse(course1);
 
-        Course course2 = new Course( "Motion, forces, and energy", "None", instructor2.getEmail(), "2023-07-01", "2023-07-15", "Mon-Wed-Fri, 1pm-3pm", "Laboratory B", "dd");
+        Course course2 = new Course( "Motion, forces, and energy", "None", "", instructor2.getEmail(), "2023-07-08", "2023-07-15", "mon 11:00 wed 12:00", "Laboratory B" );
         insertCourse(course2);
 
-        Course course3 = new Course( "Atoms, molecules, and reactions", "None", instructor3.getEmail(), "2023-07-05", "2023-07-20", "Tue-Thu, 10am-12pm", "Laboratory C", "ggh");
+        Course course3 = new Course( "Atoms, molecules, and reactions", "None",  "", instructor3.getEmail(), "2023-07-06", "2023-07-20", "mon 8:00 wed 8:00", "Laboratory C");
         insertCourse(course3);
 
         // Associate instructors with courses
         associateInstructorWithCourse(instructor1.getEmail(), course1.getCourseId());
+        associateInstructorWithCourse(instructor1.getEmail(), course2.getCourseId());
         associateInstructorWithCourse(instructor2.getEmail(), course2.getCourseId());
         associateInstructorWithCourse(instructor3.getEmail(), course3.getCourseId());
 

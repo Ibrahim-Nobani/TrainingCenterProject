@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Create the database
         DataBaseHelper dbHelper = new DataBaseHelper(MainActivity.this, "training", null, 1);
-        dbHelper.addDummyData();
+//        dbHelper.addDummyData();
         // Initialize user input elements
         emailEditText = findViewById(R.id.emailEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
@@ -83,8 +83,9 @@ public class MainActivity extends AppCompatActivity {
                             //Toast.makeText(MainActivity.this, "Trainee Activity is under development.", Toast.LENGTH_SHORT).show();
                             break;
                         case "instructor":
-                            // Intent instructorIntent = new Intent(MainActivity.this, InstructorActivity.class);
-                            // startActivity(instructorIntent);
+                             Intent instructorIntent = new Intent(MainActivity.this, InstructorDashboardActivity.class);
+                             instructorIntent.putExtra("email", email);
+                             startActivity(instructorIntent);
                             Toast.makeText(MainActivity.this, "Instructor Activity is under development.", Toast.LENGTH_SHORT).show();
                             break;
                         default:

@@ -1,0 +1,65 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:padding="16dp">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Instructor Dashboard"
+        android:textSize="24sp"
+        android:textColor="@color/black"
+        android:layout_gravity="center_horizontal"
+        android:padding="16dp"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/view_prev_courses_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Previously Taught Courses"
+        android:layout_marginTop="10dp"
+        android:backgroundTint="@color/purple_500"
+        android:textColor="@color/white"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        app:cornerRadius="8dp"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/view_schedule_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Schedule"
+        android:layout_marginTop="10dp"
+        android:backgroundTint="@color/purple_500"
+        android:textColor="@color/white"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        app:cornerRadius="8dp"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/view_students_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Students"
+        android:layout_marginTop="10dp"
+        android:backgroundTint="@color/purple_500"
+        android:textColor="@color/white"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        app:cornerRadius="8dp"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/view_profile_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Profile"
+        android:layout_marginTop="10dp"
+        android:backgroundTint="@color/purple_500"
+        android:textColor="@color/white"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        app:cornerRadius="8dp"/>
+
+
+
+</LinearLayout>
