@@ -230,7 +230,7 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
                 "JOIN InstructorCourse ON Course.courseId = InstructorCourse.courseId " +
                 "JOIN Instructor ON InstructorCourse.instructorEmail = Instructor.email " +
                 "JOIN User ON Instructor.email = User.email " +
-                "WHERE Registration.traineeEmail = ? " +
+                "WHERE Registration.traineeEmail = ?  AND Registration.status = 'Confirmed'" +
                 "AND DATE(Course.registrationDeadline) > DATE('now')",new String[]{email});
     }
 
@@ -485,14 +485,14 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
 
 
         // Add dummy admins
-        Admin admin1 = new Admin("a", "a", "John", "Doe", "p.png");
+        Admin admin1 = new Admin("admin1@example.com", "admin123", "John", "Doe", null);
         insertAdmin(admin1);
 
-        Admin admin2 = new Admin("admin2@example.com", "admin456", "Jane", "Smith", "p.png");
+        Admin admin2 = new Admin("admin2@example.com", "admin456", "Jane", "Smith", null);
         insertAdmin(admin2);
 
         // Add dummy instructors
-        Instructor instructor1 = new Instructor("i", "i", "Alice", "Smith", 1234567890, "123 Street, City", "Mathematics", "M.Sc", null, "");
+        Instructor instructor1 = new Instructor("instructor1@example.com", "instructor1pass", "Alice", "Smith", 1234567890, "123 Street, City", "Mathematics", "M.Sc", null, "");
         insertInstructor(instructor1);
 
         Instructor instructor2 = new Instructor("instructor2@example.com", "instructor2pass", "Bob", "Johnson", 96543210, "456 Avenue, Town", "Physics", "Ph.D", null, "");
@@ -503,7 +503,7 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
 
 
         // Add dummy trainees
-        Trainee trainee1 = new Trainee("3", "3", "Emma", "Brown", 433443, "789 Road, Village",  "p.png");
+        Trainee trainee1 = new Trainee("trainee1@example.com", "trainee1pass", "Emma", "Brown", 433443, "789 Road, Village",  "p.png");
         insertTrainee(trainee1);
 
         Trainee trainee2 = new Trainee("trainee2@example.com", "trainee2pass", "Jacob", "Davis", 433443, "456 Lane, County","p.png");
@@ -523,13 +523,13 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
 
 
         // Add dummy courses
-        Course course1 = new Course( "Basic math concepts", "None", "",instructor1.getEmail(), "2023-07-20", "2023-07-10", "mon 10:00 wed 10:00", "Conference Room A");
+        Course course1 = new Course( "Math", "Calculas, gemoetry", "Pre-Math",instructor1.getEmail(), "2023-07-20", "2023-07-10", "mon 10:00 wed 10:00", "Conference Room A");
         insertCourse(course1);
 
-        Course course2 = new Course( "Motion, forces, and energy", "None", "", instructor2.getEmail(), "2023-07-25", "2023-07-15", "mon 11:00 wed 12:00", "Laboratory B" );
+        Course course2 = new Course( "Coding", "Huffman, Lemple-Ziv", "Signals", instructor2.getEmail(), "2023-07-25", "2023-07-15", "mon 11:00 wed 12:00", "Laboratory B" );
         insertCourse(course2);
 
-        Course course3 = new Course( "Atoms, molecules, and reactions", "None",  "", instructor3.getEmail(), "2023-07-26", "2023-07-20", "mon 8:00 wed 8:00", "Laboratory C");
+        Course course3 = new Course( "NLP", "NLP, IR",  "AI", instructor3.getEmail(), "2023-07-26", "2023-07-20", "mon 8:00 wed 8:00", "Laboratory C");
         insertCourse(course3);
 
         // Associate instructors with courses
@@ -575,9 +575,6 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
 
         Registration registration12 = new Registration(course3.getCourseId(), trainee5.getEmail(), "Pending");
         insertRegistration(registration12);
-
-        Notification notification1 = new Notification("trainee1@example.com","This is a test");
-        insertNotification(notification1);
 
         // Close the database connection
         db.close();

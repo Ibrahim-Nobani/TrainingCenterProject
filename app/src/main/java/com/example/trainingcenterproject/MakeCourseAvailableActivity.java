@@ -15,6 +15,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.trainingcenterproject.trainee.Notification;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -122,6 +124,7 @@ public class MakeCourseAvailableActivity extends AppCompatActivity {
 
             // Show a toast message depending on whether the update was successful
             Toast.makeText(this, updated ? "Course updated successfully" : "Error updating course", Toast.LENGTH_SHORT).show();
+            sendNotifications(title);
         });
     }
 
@@ -140,5 +143,13 @@ public class MakeCourseAvailableActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, instructorEmails);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         instructorSpinner.setAdapter(adapter);
+    }
+
+    private void sendNotifications(String name){
+        DataBaseHelper dataBaseHelper = new DataBaseHelper(MakeCourseAvailableActivity.this, "training", null, 1);
+        Cursor cursor = dataBaseHelper.getAllTrainees();
+        while (cursor.moveToNext()){
+            dataBaseHelper.insertNotification(new Notification(cursor.getString(0),"A new Course is available: " + name));
+        }
     }
 }

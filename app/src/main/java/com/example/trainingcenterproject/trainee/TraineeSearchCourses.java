@@ -170,6 +170,8 @@ public class TraineeSearchCourses extends AppCompatActivity {
                         enrollFunction(new Registration(id,email,"Pending"),startDate,endDate,scedule);
                     } catch (ParseException e) {
                         throw new RuntimeException(e);
+                    } finally {
+                        onResume();
                     }
                 }
             });

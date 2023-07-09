@@ -19,11 +19,12 @@ import java.io.FileNotFoundException;
 public class AdminDashboardActivity extends AppCompatActivity {
     private String email;
     private ImageView adminPhoto;
+    private Bitmap defaultBitmap;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.admin_panel);
-
+        defaultBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.andrew);
         Button createCourseButton = findViewById(R.id.create_course_button);
         Button editDeleteCourseButton = findViewById(R.id.edit_delete_course_button);
         Button decisionRegistrationButton = findViewById(R.id.decision_registration_button);
@@ -42,20 +43,25 @@ public class AdminDashboardActivity extends AppCompatActivity {
 
         if (res != null && res.moveToFirst()){
             String fileName = res.getString(0);
-            try {
-                FileInputStream fis = openFileInput(fileName);
-                Bitmap bitmap = BitmapFactory.decodeStream(fis);
-                adminPhoto.setImageBitmap(bitmap);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } finally {
-                res.close();
+            if (fileName != null) {  // check if fileName is null
+                try {
+                    FileInputStream fis = openFileInput(fileName);
+                    Bitmap bitmap = BitmapFactory.decodeStream(fis);
+                    adminPhoto.setImageBitmap(bitmap);
+                } catch (FileNotFoundException e) {
+                    adminPhoto.setImageBitmap(defaultBitmap);
+                    e.printStackTrace();
+                } finally {
+                    res.close();
+                }
+            } else {
+                // fileName is null, set to default
+                adminPhoto.setImageBitmap(defaultBitmap);
             }
+        } else {
+            // cursor is null or empty, set to default
+            adminPhoto.setImageBitmap(defaultBitmap);
         }
-
-
-
-
         createCourseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

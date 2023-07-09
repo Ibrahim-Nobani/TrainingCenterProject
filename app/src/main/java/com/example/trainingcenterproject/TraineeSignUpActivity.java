@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -83,6 +84,12 @@ public class TraineeSignUpActivity extends AppCompatActivity {
 
     private boolean validateInputs() {
         // Add your input validation logic here
+        String email = emailEditText.getText().toString().trim();
+        if (email.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            Toast.makeText(TraineeSignUpActivity.this, "Invalid email address", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        // Add further validation here as needed
         return true;
     }
 

@@ -11,6 +11,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 
+import com.example.trainingcenterproject.trainee.Notification;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,6 +69,7 @@ public class EditCourseActivity extends AppCompatActivity {
 
             // Show a toast message depending on whether the update was successful
             Toast.makeText(this, updated ? "Course updated successfully" : "Error updating course", Toast.LENGTH_SHORT).show();
+            sendNotifications(newTitle,courseId);
         });
     }
 
@@ -85,5 +88,13 @@ public class EditCourseActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, instructorEmails);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         instructorSpinner.setAdapter(adapter);
+    }
+
+    private void sendNotifications(String name,int courseId){
+        DataBaseHelper dataBaseHelper = new DataBaseHelper(EditCourseActivity.this, "training", null, 1);
+        Cursor cursor = dataBaseHelper.getTraineesForCourse(courseId);
+        while (cursor.moveToNext()){
+            dataBaseHelper.insertNotification(new Notification(cursor.getString(0),"A you take has been edited: " + name));
+        }
     }
 }

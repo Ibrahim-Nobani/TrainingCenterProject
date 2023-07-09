@@ -15,6 +15,8 @@ package com.example.trainingcenterproject;
         import android.widget.ScrollView;
         import android.widget.TextView;
 
+        import com.example.trainingcenterproject.trainee.Notification;
+
 public class PendingCoursesActivity extends AppCompatActivity {
     LinearLayout courseList;
     Button backButton;
@@ -69,7 +71,8 @@ public class PendingCoursesActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     dataBaseHelper.acceptRegistration(courseName, email);
-                    onResume(); // Refresh the list
+                    sendNotifications(courseName,"Accepted",email);
+                    onResume();
                 }
             });
 
@@ -79,6 +82,7 @@ public class PendingCoursesActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     dataBaseHelper.rejectRegistration(courseName, email);
+                    sendNotifications(courseName,"Rejected",email);
                     onResume(); // Refresh the list
                 }
             });
@@ -92,6 +96,11 @@ public class PendingCoursesActivity extends AppCompatActivity {
 
             courseList.addView(cardView);
         }
+    }
+
+    private void sendNotifications(String name, String result,String email){
+        DataBaseHelper dataBaseHelper = new DataBaseHelper(PendingCoursesActivity.this, "training", null, 1);
+            dataBaseHelper.insertNotification(new Notification(email,"You Have been "+result+": " + name));
     }
 
 

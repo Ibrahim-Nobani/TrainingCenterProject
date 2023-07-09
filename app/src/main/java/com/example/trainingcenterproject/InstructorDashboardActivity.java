@@ -18,11 +18,13 @@ import java.io.FileNotFoundException;
 public class InstructorDashboardActivity extends AppCompatActivity {
     private String email;
     private ImageView adminPhoto;
+
+    private Bitmap defaultBitmap;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_instructor_panel);
-
+        defaultBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.andrew);
         Button prevCoursesButton = findViewById(R.id.view_prev_courses_button);
         Button scheduleButton = findViewById(R.id.view_schedule_button);
         Button viewStudentsButton = findViewById(R.id.view_students_button);
@@ -41,15 +43,24 @@ public class InstructorDashboardActivity extends AppCompatActivity {
 
         if (res != null && res.moveToFirst()){
             String fileName = res.getString(0);
-            try {
-                FileInputStream fis = openFileInput(fileName);
-                Bitmap bitmap = BitmapFactory.decodeStream(fis);
-                adminPhoto.setImageBitmap(bitmap);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } finally {
-                res.close();
+            if (fileName != null) {  // check if fileName is null
+                try {
+                    FileInputStream fis = openFileInput(fileName);
+                    Bitmap bitmap = BitmapFactory.decodeStream(fis);
+                    adminPhoto.setImageBitmap(bitmap);
+                } catch (FileNotFoundException e) {
+                    adminPhoto.setImageBitmap(defaultBitmap);
+                    e.printStackTrace();
+                } finally {
+                    res.close();
+                }
+            } else {
+                // fileName is null, set to default
+                adminPhoto.setImageBitmap(defaultBitmap);
             }
+        } else {
+            // cursor is null or empty, set to default
+            adminPhoto.setImageBitmap(defaultBitmap);
         }
 
         prevCoursesButton.setOnClickListener(new View.OnClickListener() {
